@@ -1,0 +1,435 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd
+	http://www.springframework.org/schema/util
+	http://www.springframework.org/schema/util/spring-util-2.0.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd 
+	">
+
+	<!-- lesson1 -->
+	<bean id="helloBean" class="orz.xuchao.test.lesson1.HelloWorld">
+		<property name="name" value="Yiibai" />
+	</bean>
+	<!-- lesson2 -->
+	<!-- setter方法注入 -->
+	<bean id="OutputHelper" class="orz.xuchao.test.lesson2.OutputHelper">
+		<!-- 通过更改ref的值来指定注入哪个类 -->
+		<!-- <property name="outputGenerator" ref="JsonOutputGenerator" /> -->
+		<!-- 构造注入 -->
+		<constructor-arg>
+			<bean class="orz.xuchao.test.lesson2.CsvOutputGenerator" />
+		</constructor-arg>
+	</bean>
+	<bean id="CsvOutputGenerator" class="orz.xuchao.test.lesson2.CsvOutputGenerator" />
+	<bean id="JsonOutputGenerator" class="orz.xuchao.test.lesson2.JsonOutputGenerator" />
+	<!-- lesson4 -->
+	<import resource="customer.xml" />
+	<import resource="scheduler.xml" />
+
+	<!-- lesson5 -->
+	<bean id="CustomerBean" class="orz.xuchao.test.lesson5.Customer">
+		<constructor-arg type="int">
+			<value>28</value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<value>小明</value>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String">
+			<value>天堂</value>
+		</constructor-arg>
+	</bean>
+
+	<!-- lesson6 -->
+	<bean id="FileNameGenerator1" class="orz.xuchao.test.lesson6.FileNameGenerator1">
+		<property name="name">
+			<value>FileNameGenerator1</value>
+		</property>
+		<property name="type">
+			<value>1</value>
+		</property>
+	</bean>
+	<bean id="FileNameGenerator2" class="orz.xuchao.test.lesson6.FileNameGenerator2">
+		<property name="name" value="FileNameGenerator2" />
+		<property name="type" value="2" />
+	</bean>
+
+	<bean id="FileNameGenerator3" class="orz.xuchao.test.lesson6.FileNameGenerator3"
+		p:name="FileNameGenerator3" p:type="3" />
+
+	<!-- lesson7 -->
+	<!-- <bean id="CustomerBean2" class="orz.xuchao.test.lesson7.Customer2"> 
+		<property name="person" ref="PersonBean" /> </bean> <bean id="PersonBean" 
+		class="orz.xuchao.test.lesson7.Person"> <property name="name" value="yiibai" 
+		/> <property name="address" value="address1" /> <property name="age" value="28" 
+		/> </bean> -->
+	<!-- <bean id="CustomerBean2" class="orz.xuchao.test.lesson7.Customer2"> 
+		<property name="person"> <bean class="orz.xuchao.test.lesson7.Person"> <property 
+		name="name" value="yiibai" /> <property name="address" value="address1" /> 
+		<property name="age" value="28" /> </bean> </property> </bean> -->
+	<bean id="CustomerBean2" class="orz.xuchao.test.lesson7.Customer2">
+		<constructor-arg>
+			<bean class="orz.xuchao.test.lesson7.Person">
+				<property name="name" value="yiibai" />
+				<property name="address" value="address1" />
+				<property name="age" value="28" />
+			</bean>
+		</constructor-arg>
+	</bean>
+	<!-- lesson8 -->
+	<!-- 单例子 如果 bean 配置文件中没有指定 bean 的范围，默认为单例 -->
+	<bean id="customerService" class="orz.xuchao.test.lesson8.CustomerService" />
+	<!-- 原型例子 如果想有一个新的 “CustomerService”bean 实例，每次调用它的时候，需要使用原型(prototype)来代替。 -->
+	<bean id="customerService2" class="orz.xuchao.test.lesson8.CustomerService2"
+		scope="prototype" />
+	<!-- 注解的形式 -->
+	<context:component-scan base-package="orz.xuchao.test.lesson8" />
+	<!-- lesson9 -->
+	<bean id="CustomerBean4" class="orz.xuchao.test.lesson9.Customer4">
+		<!-- java.util.List -->
+		<property name="lists">
+			<list>
+				<value>1</value>
+				<ref bean="PersonBean" />
+				<bean class="orz.xuchao.test.lesson7.Person">
+					<property name="name" value="yiibaiList" />
+					<property name="address" value="Hainan Haikou" />
+					<property name="age" value="28" />
+				</bean>
+			</list>
+		</property>
+		<!-- java.util.Set -->
+		<property name="sets">
+			<set>
+				<value>1</value>
+				<ref bean="PersonBean" />
+				<bean class="orz.xuchao.test.lesson7.Person">
+					<property name="name" value="yiibaiSet" />
+					<property name="address" value="Hainan Haikou" />
+					<property name="age" value="28" />
+				</bean>
+			</set>
+		</property>
+		<!-- java.util.Map -->
+		<property name="maps">
+			<map>
+				<entry key="Key 1" value="1" />
+				<entry key="Key 2" value-ref="PersonBean" />
+				<entry key="Key 3">
+					<bean class="orz.xuchao.test.lesson7.Person">
+						<property name="name" value="yiibaiMap" />
+						<property name="address" value="Hainan Haikou" />
+						<property name="age" value="28" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+		<!-- java.util.Properties -->
+		<property name="pros">
+			<props>
+				<prop key="admin">admin@yiibai.com</prop>
+				<prop key="support">support@yiibai.com</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="PersonBean" class="orz.xuchao.test.lesson7.Person">
+		<property name="name" value="yiibai1" />
+		<property name="address" value="Hainan Haikou 1" />
+		<property name="age" value="28" />
+	</bean>
+	<!-- lesson10 -->
+	<bean id="Customer5" class="orz.xuchao.test.lesson10.Customer5">
+		<property name="lists">
+			<util:list list-class="java.util.ArrayList">
+				<value>one</value>
+				<value>2</value>
+				<value>three</value>
+			</util:list>
+		</property>
+	</bean>
+
+
+	<!-- <bean id="Customer5" class="orz.xuchao.test.lesson10.Customer5"> <property 
+		name="lists"> <bean class="org.springframework.beans.factory.config.ListFactoryBean"> 
+		<property name="targetListClass"> <value>java.util.ArrayList</value> </property> 
+		<property name="sourceList"> <list> <value>one</value> <value>2</value> <value>three</value> 
+		</list> </property> </bean> </property> </bean> -->
+	<!-- lesson11 -->
+
+
+	<!-- <bean id="CustomerBean11" class="orz.xuchao.test.lesson11.Customer11"> 
+		<property name="sets"> <bean class="org.springframework.beans.factory.config.SetFactoryBean"> 
+		<property name="targetSetClass"> <value>java.util.HashSet</value> </property> 
+		<property name="sourceSet"> <list> <value>one</value> <value>2</value> <value>three</value> 
+		</list> </property> </bean> </property> </bean> -->
+	<bean id="CustomerBean11" class="orz.xuchao.test.lesson11.Customer11">
+		<property name="sets">
+			<util:set set-class="java.util.HashSet">
+				<value>one</value>
+				<value>2</value>
+				<value>three</value>
+			</util:set>
+		</property>
+	</bean>
+	<!-- lesson12 -->
+	<!-- <bean id="CustomerBean12" class="orz.xuchao.test.lesson12.Customer12"> 
+		<property name="maps"> <util:map map-class="java.util.HashMap"> <entry key="Key1" 
+		value="1" /> <entry key="Key2" value="2" /> <entry key="Key3" value="3" /> 
+		</util:map> </property> </bean> -->
+	<bean id="CustomerBean12" class="orz.xuchao.test.lesson12.Customer12">
+		<property name="maps">
+			<bean class="org.springframework.beans.factory.config.MapFactoryBean">
+				<property name="targetMapClass">
+					<value>java.util.HashMap</value>
+				</property>
+				<property name="sourceMap">
+					<map>
+						<entry key="Key1" value="one" />
+						<entry key="Key2" value="two" />
+						<entry key="Key3" value="three" />
+					</map>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	<!-- lesson13 -->
+	<bean id="dateFormat" class="java.text.SimpleDateFormat">
+		<constructor-arg value="yyyy-MM-dd" />
+	</bean>
+
+	<bean id="customer13" class="orz.xuchao.test.lesson13.Customer13">
+		<property name="date">
+			<bean factory-bean="dateFormat" factory-method="parse">
+				<constructor-arg value="2015-12-31" />
+			</bean>
+		</property>
+	</bean>
+	<!-- lesson14 -->
+	<bean id="BaseCustomerMalaysia" class="orz.xuchao.test.lesson14.BaseCustomerMalaysia">
+		<property name="country" value="Malaysia" />
+	</bean>
+
+	<bean id="Customer14" parent="BaseCustomerMalaysia">
+		<property name="country" value="Japan" />
+		<property name="action" value="buy" />
+		<property name="type" value="1" />
+	</bean>
+	<!-- lesson15 -->
+	<bean id="customerService15" class="orz.xuchao.test.lesson15.CustomerService15">
+		<property name="message" value="I'm property message" />
+	</bean>
+	<bean id="customerService15_2" class="orz.xuchao.test.lesson15.CustomerService15_2"
+		init-method="initIt" destroy-method="cleanUp">
+
+		<property name="message" value="i'm property message" />
+	</bean>
+	<!-- <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" 
+		/> -->
+	<context:annotation-config />
+	<bean id="customerService15_3" class="orz.xuchao.test.lesson15.CustomerService15_3">
+		<property name="message" value="i'm property message" />
+	</bean>
+	<!-- lesson16 -->
+	<bean id="itemBean16" class="orz.xuchao.test.lesson16.Item16">
+		<property name="name" value="itemA" />
+		<property name="qty" value="10" />
+	</bean>
+	<bean id="customerBean16" class="orz.xuchao.test.lesson16.Customer16">
+		<property name="item" value="#{itemBean16}" />
+		<property name="itemName" value="#{itemBean16.name}" />
+	</bean>
+	<context:component-scan base-package="orz.xuchao.test.lesson16" />
+	<!-- lesson17 -->
+	<context:component-scan base-package="orz.xuchao.test.lesson17" />
+	<!-- lesson18 -->
+	<context:component-scan base-package="orz.xuchao.test.lesson18">
+
+		<context:include-filter type="regex"
+			expression="orz.xuchao.test.lesson18.*DAO.*" />
+
+		<context:include-filter type="regex"
+			expression="orz.xuchao.test.lesson18.*Service.*" />
+
+	</context:component-scan>
+	<!-- 另外，您还可以排除指定组件，以避免 Spring 检测和 Spring 容器注册。不包括在这些文件中标注有 @Service 。 <context:component-scan 
+		base-package="com.yiibai.customer" > <context:exclude-filter type="annotation" 
+		expression="org.springframework.stereotype.Service" /> </context:component-scan> 
+		不包括那些包含DAO这个词组文件名。 <context:component-scan base-package="com.yiibai" > <context:exclude-filter 
+		type="regex" expression="com.yiibai.customer.dao.*DAO.*" /> </context:component-scan> -->
+
+	<!-- lesson19 -->
+	<!-- no – 缺省情况下，自动配置是通过“ref”属性手动设定 -->
+	<bean id="Customer19_1" class="orz.xuchao.test.lesson19.Customer19_1">
+		<property name="person" ref="Person19_1" />
+	</bean>
+	<bean id="Person19_1" class="orz.xuchao.test.lesson19.Person19_1">
+		<property name="name" value="小明" />
+	</bean>
+	<!-- byType – 按数据类型自动装配。如果一个bean的数据类型是用其它bean属性的数据类型，兼容并自动装配它。 -->
+	<bean id="Customer19_2" class="orz.xuchao.test.lesson19.Customer19_2"
+		autowire="byType" />
+	<bean id="Person19_2" class="orz.xuchao.test.lesson19.Person19_2">
+		<property name="name" value="小红" />
+	</bean>
+	<!-- byName – 根据属性名称自动装配。如果一个bean的名称和其他bean属性的名称是一样的，将会自装配它。 -->
+	<bean id="Customer19_3" class="orz.xuchao.test.lesson19.Customer19_3"
+		autowire="byName" />
+	<bean id="person" class="orz.xuchao.test.lesson19.Person19_3">
+		<property name="name" value="小强" />
+	</bean>
+	<!-- constructor – 在构造函数参数的byType方式。 -->
+	<bean id="Customer19_4" class="orz.xuchao.test.lesson19.Customer19_4">
+		<constructor-arg>
+			<ref bean="Person19_4" />
+		</constructor-arg>
+	</bean>
+	<bean id="Person19_4" class="orz.xuchao.test.lesson19.Person19_4">
+		<property name="name" value="Java" />
+	</bean>
+	<!-- autodetect – 如果找到默认的构造函数，使用“自动装配用构造”; 否则，使用“按类型自动装配”。 -->
+	<bean id="Customer19_5" class="orz.xuchao.test.lesson19.Customer19_5"
+		autowire="constructor" />
+	<bean id="Person19_5" class="orz.xuchao.test.lesson19.Person19_5">
+		<property name="name" value="Tai Ji" />
+	</bean>
+	<!-- lesson20 -->
+	<context:annotation-config />
+	<bean id="Customer20" class="orz.xuchao.test.lesson20.Customer20">
+		<property name="action" value="buy" />
+		<property name="type" value="1" />
+	</bean>
+	<bean id="PersonBean20_1" class="orz.xuchao.test.lesson20.Person20">
+		<property name="name" value="小明" />
+	</bean>
+	<bean id="PersonBean20_2" class="orz.xuchao.test.lesson20.Person20">
+		<property name="name" value="小红" />
+	</bean>
+	<!-- lesson21 -->
+	<bean id="customerService21" class="orz.xuchao.test.lesson21.CustomerService21">
+		<property name="name" value="YiiBaii Mook Kim" />
+		<property name="url" value="http://www.yiibai.com" />
+	</bean>
+	<bean id="hijackBeforeMethodBean" class="orz.xuchao.test.lesson21.HijackBeforeMethod" />
+	<bean id="customerServiceProxy21_1" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="customerService21" />
+		<property name="interceptorNames">
+			<list>
+				<value>hijackBeforeMethodBean</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="hijackAroundMethodBean2" class="orz.xuchao.test.lesson21.HijackAroundMethod2" />
+	<bean id="customerServiceProxy21_2" class="org.springframework.aop.framework.ProxyFactoryBean">
+
+		<property name="target" ref="customerService21" />
+
+		<property name="interceptorNames">
+			<list>
+				<value>hijackAroundMethodBean2</value>
+			</list>
+		</property>
+	</bean>
+	<!-- lesson22 -->
+	<bean id="customerService22" class="orz.xuchao.test.lesson22.CustomerService22">
+		<property name="name" value="Yiibai" />
+		<property name="url" value="http://www.yiibai.com" />
+	</bean>
+	<bean id="hijackAroundMethodBeanAdvice22" class="orz.xuchao.test.lesson22.HijackAroundMethod22" />
+	<bean id="customerServiceProxy22" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="customerService22" />
+		<property name="interceptorNames">
+			<list>
+				<value>customerAdvisor22_1</value>
+				<value>customerAdvisor22_2</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="customerAdvisor22_1"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName" value="printName" />
+		<property name="advice" ref="hijackAroundMethodBeanAdvice22" />
+	</bean>
+	<bean id="customerAdvisor22_2"
+		class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="patterns">
+			<list>
+				<value>.*URL.*</value>
+				<value>printName</value>
+			</list>
+		</property>
+		<property name="advice" ref="hijackAroundMethodBeanAdvice22" />
+	</bean>
+	<!-- lesson23 -->
+	<bean id="MyCustomerService" class="orz.xuchao.test.lesson23.MyCustomerService">
+		<property name="name" value="Yiibai Mook Kim" />
+		<property name="url" value="http://www.yiibai.com" />
+	</bean>
+	<bean id="hijackAroundMethodBeanAdvice23" class="orz.xuchao.test.lesson23.HijackAroundMethod23" />
+	<bean id="customerAdvisor23"
+		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="mappedName" value="printName" />
+		<property name="advice" ref="hijackAroundMethodBeanAdvice23" />
+	</bean>
+	<!-- <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" 
+		/> -->
+	<bean
+		class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<list>
+				<value>MyCustomerService</value>
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>customerAdvisor23</value>
+			</list>
+		</property>
+	</bean>
+	<!-- lesson24 -->
+	<aop:aspectj-autoproxy />
+	<bean id="customerBo24" class="orz.xuchao.test.lesson24.CustomerBoImpl24" />
+	<bean id="logAspect24" class="orz.xuchao.test.lesson24.LoggingAspect24" />
+	<!-- <aop:config> <aop:aspect id="aspectLoggging" ref="logAspect"> @Before 
+		<aop:pointcut id="pointCutBefore" expression="execution(* com.yiibai.customer.bo.CustomerBo.addCustomer(..))" 
+		/> <aop:before method="logBefore" pointcut-ref="pointCutBefore" /> @After 
+		<aop:pointcut id="pointCutAfter" expression="execution(* com.yiibai.customer.bo.CustomerBo.addCustomer(..))" 
+		/> <aop:after method="logAfter" pointcut-ref="pointCutAfter" /> @AfterReturning 
+		<aop:pointcut id="pointCutAfterReturning" expression="execution(* com.yiibai.customer.bo.CustomerBo.addCustomerReturnValue(..))" 
+		/> <aop:after-returning method="logAfterReturning" returning="result" pointcut-ref="pointCutAfterReturning" 
+		/> @AfterThrowing <aop:pointcut id="pointCutAfterThrowing" expression="execution(* 
+		com.yiibai.customer.bo.CustomerBo.addCustomerThrowException(..))" /> <aop:after-throwing 
+		method="logAfterThrowing" throwing="error" pointcut-ref="pointCutAfterThrowing" 
+		/> @Around <aop:pointcut id="pointCutAround" expression="execution(* com.yiibai.customer.bo.CustomerBo.addCustomerAround(..))" 
+		/> <aop:around method="logAround" pointcut-ref="pointCutAround" /> </aop:aspect> 
+		</aop:config> -->
+
+	<!-- lesson25 -->
+	<bean id="XMLConverter" class="orz.xuchao.test.lesson25.XMLConverter">
+		<property name="marshaller" ref="castorMarshaller" />
+		<property name="unmarshaller" ref="castorMarshaller" />
+	</bean>
+	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
+	<!-- lesson26 -->
+<!-- 	<bean id="customerDAO26" class="orz.xuchao.test.lesson26.JdbcCustomerDAO26">
+		<property name="dataSource" ref="dataSource" />
+	</bean> -->
+	<bean id="customerDAO26" class="orz.xuchao.test.lesson26.JdbcCustomerDAO26_2">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/testMySql" />
+		<property name="username" value="root" />
+		<property name="password" value="123456" />
+	</bean>
+
+
+
+</beans>
